@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+
 import axios from 'axios'
 import NumericInput from 'react-numeric-input';
 import uuid from "uuid";
@@ -36,9 +37,48 @@ class MyApp extends Component {
   changeHadler =(e) =>{
     const name = e.target.name;
     const value = e.target.value;
+    if(name!="numer" && name!="email")
     this.setState({[e.target.name]:e.target.value})
-   
+    else{
+      console.log(value);
+
+    this.setState({[e.target.name]:e.target.value} , () => { this.validateField(name, value) })
+      
+    }
+    
 };
+
+validateField(fieldName, value) {
+  let emailError2='';
+  let numberError2='';
+
+  let emailValid2 = this.state.emailValid;
+  let numberValid2 = this.state.numberValid;
+
+  let passwordValid = this.state.passwordValid;
+  switch(fieldName) {
+    case 'email':
+      emailValid2 = value.match(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i);
+      emailError2 = emailValid2 ? '' : ' is invalid, unfortunatelly';
+      break;
+    case 'numer':
+        const phone = /^[0-9]{9}$/;
+        phone.test(value)
+        numberValid2 = phone.test(this.state.numer);
+        numberError2 = numberValid2 ? '': 'incorrect';
+      break;
+   default:
+      break;
+  }
+  this.setState({
+                  emailValid: emailValid2,
+                emailError:emailError2,
+                numberValid: numberValid2,
+                numberError:numberError2
+                });
+}
+
+
 
 
 validate = () => {
@@ -76,6 +116,7 @@ handleSubmit = event => {
   console.log("vaw");
 
   if (isValid) {
+    console.log(this.state);
     // clear form
     this.setState({ emailError:"",numberError:"" });
   }
@@ -119,7 +160,7 @@ handleSubmit = event => {
         <br />
         
 
-        <button   >Submit</button>
+        <button   disabled={!this.state.emailValid}>Submit</button>
         </form>) } 
 
         {(this.state.age<18 )&&(<form onSubmit={this.handleSubmit}>
@@ -138,7 +179,7 @@ handleSubmit = event => {
          <div style={{ fontSize: 12, color: "red" }}>
             {this.state.numberError}
           </div>
-        <button  >Submit</button>
+        <button  disabled={!this.state.numberValid}>Submit</button>
         </form>)} 
 
 
