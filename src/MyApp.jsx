@@ -34,19 +34,51 @@ class MyApp extends Component {
   }
  
   changeHadler =(e) =>{
+    const name = e.target.name;
+    const value = e.target.value;
     this.setState({[e.target.name]:e.target.value})
-
-      
-    
+   
 };
 
+
+validate = () => {
+  
+  let emailError2 = "";
+  let numberError2 = "";
+
+  // let passwordError = "";
+
+ 
+
+  if (!this.state.email.match(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i)) {
+    emailError2 = "invalid email";
+  }
+
+  const phone = /^[0-9]{9}$/;
+  
+  if (!phone.test(this.state.numer)||this.state.numer.toString().length>9) {
+    numberError2 = "invalid number";
+  }
+
+  if (emailError2 || numberError2) {
+    this.setState({ emailError:emailError2,numberError:numberError2 });
+    return false;
+  }
+
+  return true;
+};
 
 
 
 handleSubmit = event => {
   event.preventDefault();
+  const isValid = this.validate();
+  console.log("vaw");
 
-  
+  if (isValid) {
+    // clear form
+    this.setState({ emailError:"",numberError:"" });
+  }
 };
    
   componentDidMount() {
@@ -72,7 +104,7 @@ handleSubmit = event => {
         <div className="col-xs-12">
         <label>Age: </label>
         <NumericInput type="text" name="age"   value={this.state.age} onChange={value => this.setState({age: value })} />
-        { (this.state.age>=18 )&&(<form >
+        { (this.state.age>=18 )&&(<form onSubmit={this.handleSubmit}>
 
       
 
@@ -87,9 +119,10 @@ handleSubmit = event => {
         <br />
         
 
+        <button   >Submit</button>
         </form>) } 
 
-        {(this.state.age<18 )&&(<form>
+        {(this.state.age<18 )&&(<form onSubmit={this.handleSubmit}>
                 
        
         <label>Name: </label>
@@ -105,6 +138,7 @@ handleSubmit = event => {
          <div style={{ fontSize: 12, color: "red" }}>
             {this.state.numberError}
           </div>
+        <button  >Submit</button>
         </form>)} 
 
 
